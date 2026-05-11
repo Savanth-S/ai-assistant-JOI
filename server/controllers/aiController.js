@@ -132,16 +132,33 @@ export const deleteConversation =
     }
   };
 
-// CHAT WITH AI STREAMING
+// CHAT WITH AI
 export const chatWithAI =
   async (req, res) => {
 
     try {
 
+      console.log(
+        "CHAT REQUEST RECEIVED"
+      );
+
       const {
         message,
         conversationId,
       } = req.body;
+
+      if (
+        !message ||
+        !conversationId
+      ) {
+
+        return res
+          .status(400)
+          .json({
+            message:
+              "Message and conversationId required",
+          });
+      }
 
       // CHECK EXISTING CHAT
       const existingChat =
@@ -214,45 +231,28 @@ You are:
         ),
       ];
 
-      // STREAM HEADERS
-      res.setHeader(
-        "Content-Type",
-        "text/plain"
+      console.log(
+        "SENDING TO OPENROUTER..."
       );
 
-      res.setHeader(
-        "Transfer-Encoding",
-        "chunked"
-      );
-
-      // OPENROUTER STREAM
+      // NORMAL RESPONSE (NOT STREAMING)
       const completion =
         await openai.chat.completions.create({
           model:
             "openai/gpt-3.5-turbo",
 
           messages,
-
-          stream: true,
         });
 
-      let fullReply = "";
+      const aiReply =
+        completion.choices?.[0]
+          ?.message?.content ||
+        "No response";
 
-      for await (
-        const chunk of completion
-      ) {
-
-        const content =
-          chunk.choices?.[0]
-            ?.delta?.content ||
-          "";
-
-        fullReply += content;
-
-        res.write(content);
-      }
-
-      res.end();
+      console.log(
+        "AI RESPONSE:",
+        aiReply
+      );
 
       // SAVE AI MESSAGE
       await Chat.create({
@@ -264,10 +264,13 @@ You are:
 
         sender: "ai",
 
-        message: fullReply,
+        message: aiReply,
       });
 
-      // CHATGPT STYLE TITLE GENERATION
+      // SEND RESPONSE
+      res.send(aiReply);
+
+      // GENERATE TITLE
       if (!existingChat) {
 
         setTimeout(async () => {
@@ -324,11 +327,14 @@ You are:
 
     } catch (error) {
 
-      console.log(error);
+      console.log(
+        "CHAT ERROR:",
+        error
+      );
 
       res.status(500).json({
         message:
-          "Streaming failed",
+          "AI response failed",
       });
     }
   };
