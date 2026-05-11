@@ -1,5 +1,5 @@
 const API =
-  "https://ai-assistant-joi-backend.onrender.com";
+  "https://ai-assistant-joi-backend.onrender.com/api";
 
 export const fetchConversations =
   async (token) => {
