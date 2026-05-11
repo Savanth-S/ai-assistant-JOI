@@ -1,5 +1,5 @@
 const API =
-  "https://ai-assistant-joi-backend.onrender.com";
+  "https://ai-assistant-joi-backend.onrender.com/api/ai";
 
 export const fetchConversations =
   async (token) => {
@@ -113,14 +113,6 @@ export const streamChat =
         decoder.decode(value);
 
       fullText += chunk;
-
-      await new Promise(
-        (resolve) =>
-          setTimeout(
-            resolve,
-            20
-          )
-      );
 
       onChunk(fullText);
     }
