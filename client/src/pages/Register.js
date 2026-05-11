@@ -32,7 +32,7 @@ function Register() {
       try {
 
         const res = await fetch(
-          "http://localhost:5000/api/auth/register",
+          "https://ai-assistant-joi-backend.onrender.com",
           {
             method: "POST",
 
