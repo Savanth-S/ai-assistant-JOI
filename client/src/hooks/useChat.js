@@ -56,28 +56,6 @@ function useChat(
       conversationId
     ];
 
-  // LOAD CONVERSATIONS
-  useEffect(() => {
-
-    if (token) {
-
-      loadConversations();
-    }
-
-  }, [loadConversations, token]);
-
-  // LOAD HISTORY
-  useEffect(() => {
-
-    if (conversationId) {
-
-      loadHistory(
-        conversationId
-      );
-    }
-
-  }, [conversationId, loadHistory]);
-
   // FETCH CONVERSATIONS
   const loadConversations =
     async () => {
@@ -132,6 +110,28 @@ function useChat(
       }
     };
 
+  // LOAD CONVERSATIONS
+  useEffect(() => {
+
+    if (token) {
+
+      loadConversations();
+    }
+
+  }, [token]);
+
+  // LOAD HISTORY
+  useEffect(() => {
+
+    if (conversationId) {
+
+      loadHistory(
+        conversationId
+      );
+    }
+
+  }, [conversationId]);
+
   // FILE UPLOAD
   const handleFileUpload =
     async (file) => {
@@ -146,21 +146,21 @@ function useChat(
 
         // SAVE FILE TO THIS CHAT
         setConversationFiles(
-  (prev) => ({
-    ...prev,
+          (prev) => ({
+            ...prev,
 
-    [conversationId]: {
-      filename:
-        data.file.filename,
+            [conversationId]: {
+              filename:
+                data.file.filename,
 
-      originalname:
-        data.file.originalname,
+              originalname:
+                data.file.originalname,
 
-      content:
-        data.file.content,
-    },
-  })
-);
+              content:
+                data.file.content,
+            },
+          })
+        );
 
         setChat((prev) => [
           ...prev,
@@ -215,8 +215,8 @@ function useChat(
           token,
 
           message:
-  uploadedFile
-    ? `
+            uploadedFile
+              ? `
 User Message:
 ${currentMessage}
 
@@ -226,7 +226,8 @@ ${uploadedFile.originalname}
 Uploaded File Content:
 ${uploadedFile.content}
 `
-    : currentMessage,
+              : currentMessage,
+
           conversationId,
 
           onChunk:
