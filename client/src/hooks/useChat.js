@@ -1,6 +1,7 @@
 import {
   useEffect,
   useState,
+  useCallback,
 } from "react";
 
 import {
@@ -45,72 +46,109 @@ function useChat(
     setConversations] =
     useState([]);
 
-  // STORE FILES PER CHAT
   const [conversationFiles,
     setConversationFiles] =
     useState({});
 
-  // CURRENT CHAT FILE
   const uploadedFile =
     conversationFiles[
       conversationId
     ];
 
-  // FETCH CONVERSATIONS
   const loadConversations =
-    async () => {
+    useCallback(
+      async () => {
 
-      try {
+        try {
 
-        const data =
-          await fetchConversations(
-            token
+          const data =
+            await fetchConversations(
+              token
+            );
+
+          if (
+            Array.isArray(data)
+          ) {
+
+            setConversations(
+              data
+            );
+
+          } else {
+
+            console.log(
+              "Invalid conversations data:",
+              data
+            );
+
+            setConversations(
+              []
+            );
+          }
+
+        } catch (error) {
+
+          console.log(error);
+
+          setConversations(
+            []
           );
+        }
+      },
+      [token]
+    );
 
-        setConversations(
-          data
-        );
-
-      } catch (error) {
-
-        console.log(error);
-      }
-    };
-
-  // FETCH HISTORY
   const loadHistory =
-    async (id) => {
+    useCallback(
+      async (id) => {
 
-      try {
+        try {
 
-        const data =
-          await fetchHistory(
-            token,
-            id
-          );
+          const data =
+            await fetchHistory(
+              token,
+              id
+            );
 
-        const formatted =
-          data.map(
-            (chat) => ({
-              sender:
-                chat.sender,
+          if (
+            Array.isArray(data)
+          ) {
 
-              text:
-                chat.message,
-            })
-          );
+            const formatted =
+              data.map(
+                (chat) => ({
+                  sender:
+                    chat.sender,
 
-        setChat(
-          formatted
-        );
+                  text:
+                    chat.message,
+                })
+              );
 
-      } catch (error) {
+            setChat(
+              formatted
+            );
 
-        console.log(error);
-      }
-    };
+          } else {
 
-  // LOAD CONVERSATIONS
+            console.log(
+              "Invalid history data:",
+              data
+            );
+
+            setChat([]);
+          }
+
+        } catch (error) {
+
+          console.log(error);
+
+          setChat([]);
+        }
+      },
+      [token]
+    );
+
   useEffect(() => {
 
     if (token) {
@@ -118,9 +156,11 @@ function useChat(
       loadConversations();
     }
 
-  }, [token]);
+  }, [
+    loadConversations,
+    token,
+  ]);
 
-  // LOAD HISTORY
   useEffect(() => {
 
     if (conversationId) {
@@ -130,9 +170,11 @@ function useChat(
       );
     }
 
-  }, [conversationId]);
+  }, [
+    conversationId,
+    loadHistory,
+  ]);
 
-  // FILE UPLOAD
   const handleFileUpload =
     async (file) => {
 
@@ -144,7 +186,6 @@ function useChat(
             file
           );
 
-        // SAVE FILE TO THIS CHAT
         setConversationFiles(
           (prev) => ({
             ...prev,
@@ -178,7 +219,6 @@ function useChat(
       }
     };
 
-  // SEND MESSAGE
   const sendMessage =
     async () => {
 
@@ -279,7 +319,6 @@ ${uploadedFile.content}
       }
     };
 
-  // DELETE CHAT
   const deleteConversation =
     async (
       e,
@@ -305,40 +344,12 @@ ${uploadedFile.content}
           updated
         );
 
-        // REMOVE FILE TOO
-        setConversationFiles(
-          (prev) => {
-
-            const copy =
-              { ...prev };
-
-            delete copy[id];
-
-            return copy;
-          }
-        );
-
-        if (
-          conversationId === id
-        ) {
-
-          const newId =
-            Date.now().toString();
-
-          setConversationId(
-            newId
-          );
-
-          setChat([]);
-        }
-
       } catch (error) {
 
         console.log(error);
       }
     };
 
-  // NEW CHAT
   const newConversation =
     () => {
 
@@ -352,7 +363,6 @@ ${uploadedFile.content}
       setChat([]);
     };
 
-  // ENTER SEND
   const handleKeyDown =
     (e) => {
 
