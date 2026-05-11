@@ -64,7 +64,7 @@ function useChat(
       loadConversations();
     }
 
-  }, []);
+  }, [loadConversations, token]);
 
   // LOAD HISTORY
   useEffect(() => {
@@ -76,7 +76,7 @@ function useChat(
       );
     }
 
-  }, [conversationId]);
+  }, [conversationId, loadHistory]);
 
   // FETCH CONVERSATIONS
   const loadConversations =
