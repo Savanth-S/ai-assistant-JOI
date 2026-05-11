@@ -1,0 +1,154 @@
+import {
+  useState,
+} from "react";
+
+import {
+  useNavigate,
+  Link,
+} from "react-router-dom";
+
+import "./Auth.css";
+
+function Login() {
+
+  const navigate =
+    useNavigate();
+
+  const [email, setEmail] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
+
+  const [error, setError] =
+    useState("");
+
+  const loginUser =
+    async () => {
+
+      try {
+
+        const res = await fetch(
+          "http://localhost:5000/api/auth/login",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body: JSON.stringify({
+              email,
+              password,
+            }),
+          }
+        );
+
+        const data =
+          await res.json();
+
+        if (!res.ok) {
+
+          setError(
+            data.message
+          );
+
+          return;
+        }
+
+        localStorage.setItem(
+          "token",
+          data.token
+        );
+
+        navigate("/chat");
+
+        window.location.reload();
+
+      } catch (error) {
+
+        setError(
+          "Server error"
+        );
+      }
+    };
+
+  const handleKeyDown =
+    (e) => {
+
+      if (e.key === "Enter") {
+        loginUser();
+      }
+    };
+
+  return (
+
+    <div className="auth-page">
+
+      <div className="auth-card">
+
+        <div className="auth-logo">
+          Joi
+        </div>
+
+        <p className="auth-subtitle">
+          Welcome back.
+        </p>
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) =>
+            setEmail(
+              e.target.value
+            )
+          }
+          onKeyDown={handleKeyDown}
+          className="auth-input"
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) =>
+            setPassword(
+              e.target.value
+            )
+          }
+          onKeyDown={handleKeyDown}
+          className="auth-input"
+        />
+
+        <button
+          onClick={loginUser}
+          className="auth-button"
+        >
+          Login
+        </button>
+
+        {error && (
+          <p className="auth-error">
+            {error}
+          </p>
+        )}
+
+        <div className="auth-footer">
+
+          No account?{" "}
+
+          <Link to="/register">
+            Register
+          </Link>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+export default Login;

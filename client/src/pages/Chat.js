@@ -1,0 +1,156 @@
+import "./Chat.css";
+
+import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+import MessageList from "../components/MessageList";
+import ChatInput from "../components/ChatInput";
+
+import useChat from "../hooks/useChat";
+import { useVoice } from "../hooks/useVoice";
+
+function Chat() {
+
+  // VOICE HOOK
+  const {
+    listening,
+    startListening,
+    stopListening,
+    browserSupportsSpeechRecognition,
+    speaking,
+    voices,
+    selectedVoice,
+    setSelectedVoice,
+    voiceEnabled,
+    setVoiceEnabled,
+    speakText,
+  } = useVoice(() => {});
+
+  // CHAT HOOK
+  const {
+    message,
+    setMessage,
+    chat,
+    loading,
+    conversations,
+    setConversationId,
+    sendMessage,
+    newConversation,
+    deleteConversation,
+    handleKeyDown,
+    handleFileUpload,
+  } = useChat(
+    speakText
+  );
+
+  // CONNECT VOICE INPUT
+  useVoice(
+    setMessage
+  );
+
+  // LOGOUT
+  const logout = () => {
+
+    localStorage.removeItem(
+      "token"
+    );
+
+    window.location.href =
+      "/login";
+  };
+
+  return (
+
+    <div className="chat-page">
+
+      <Sidebar
+        conversations={
+          conversations
+        }
+
+        setConversationId={
+          setConversationId
+        }
+
+        deleteConversation={
+          deleteConversation
+        }
+
+        newConversation={
+          newConversation
+        }
+
+        voices={voices}
+
+        selectedVoice={
+          selectedVoice
+        }
+
+        setSelectedVoice={
+          setSelectedVoice
+        }
+
+        voiceEnabled={
+          voiceEnabled
+        }
+
+        setVoiceEnabled={
+          setVoiceEnabled
+        }
+
+        logout={logout}
+      />
+
+      <div className="chat-container">
+
+        <Header
+          speaking={speaking}
+        />
+
+        <MessageList
+          chat={chat}
+          loading={loading}
+        />
+
+        <ChatInput
+          message={message}
+
+          setMessage={
+            setMessage
+          }
+
+          sendMessage={
+            sendMessage
+          }
+
+          handleKeyDown={
+            handleKeyDown
+          }
+
+          listening={
+            listening
+          }
+
+          startListening={
+            startListening
+          }
+
+          stopListening={
+            stopListening
+          }
+
+          browserSupportsSpeechRecognition={
+            browserSupportsSpeechRecognition
+          }
+
+          onFileSelect={
+            handleFileUpload
+          }
+        />
+
+      </div>
+
+    </div>
+  );
+}
+
+export default Chat;
