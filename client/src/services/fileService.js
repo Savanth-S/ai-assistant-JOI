@@ -1,5 +1,5 @@
 const API =
-  "http://localhost:5000/api/files";
+  "https://ai-assistant-joi-backend.onrender.com";
 
 export const uploadFile =
   async (
