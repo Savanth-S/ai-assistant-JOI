@@ -3,164 +3,218 @@ import {
   useState,
 } from "react";
 
-export function useVoice() {
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
-  const [voiceEnabled,
-    setVoiceEnabled] =
-    useState(true);
+export const useVoice =
+  (setMessage) => {
 
-  const [speaking,
-    setSpeaking] =
-    useState(false);
+    const [
+      speaking,
+      setSpeaking,
+    ] = useState(false);
 
-  const [voices,
-    setVoices] =
-    useState([]);
+    const [
+      voices,
+      setVoices,
+    ] = useState([]);
 
-  const [selectedVoice,
-    setSelectedVoice] =
-    useState("");
+    const [
+      selectedVoice,
+      setSelectedVoice,
+    ] = useState(null);
 
-  // LOAD AVAILABLE VOICES
+    const [
+      voiceEnabled,
+      setVoiceEnabled,
+    ] = useState(true);
 
-  useEffect(() => {
+    const {
+      transcript,
+      listening,
+      browserSupportsSpeechRecognition,
+      resetTranscript,
+    } =
+      useSpeechRecognition();
 
-    const loadVoices =
-      () => {
+    // LOAD VOICES
+    useEffect(() => {
 
-        const availableVoices =
-          window.speechSynthesis.getVoices();
+      const loadVoices =
+        () => {
 
-        setVoices(
-          availableVoices
-        );
+          const availableVoices =
+            window.speechSynthesis.getVoices();
 
-        if (
-          availableVoices.length > 0 &&
-          !selectedVoice
-        ) {
+          if (
+            availableVoices.length > 0
+          ) {
 
-          const preferredVoice =
-            availableVoices.find(
-              (voice) =>
-
-                voice.name
-                  .toLowerCase()
-                  .includes(
-                    "zira"
-                  ) ||
-
-                voice.name
-                  .toLowerCase()
-                  .includes(
-                    "aria"
-                  ) ||
-
-                voice.name
-                  .toLowerCase()
-                  .includes(
-                    "samantha"
-                  )
+            setVoices(
+              availableVoices
             );
 
-          setSelectedVoice(
+            // RESTORE SAVED VOICE
+            const savedVoice =
+              localStorage.getItem(
+                "selectedVoice"
+              );
 
-            preferredVoice
-              ? preferredVoice.name
-              : availableVoices[0]
-                  .name
-          );
-        }
-      };
+            if (savedVoice) {
 
-    loadVoices();
+              const foundVoice =
+                availableVoices.find(
+                  (voice) =>
+                    voice.name ===
+                    savedVoice
+                );
 
-    window.speechSynthesis.onvoiceschanged =
-      loadVoices;
+              if (foundVoice) {
 
-    return () => {
+                setSelectedVoice(
+                  foundVoice
+                );
+
+                return;
+              }
+            }
+
+            // DEFAULT VOICE
+            setSelectedVoice(
+              availableVoices[0]
+            );
+          }
+        };
+
+      loadVoices();
 
       window.speechSynthesis.onvoiceschanged =
-        null;
-    };
+        loadVoices;
 
-  }, [selectedVoice]);
+      return () => {
 
-  // SPEAK FUNCTION
+        window.speechSynthesis.onvoiceschanged =
+          null;
+      };
 
-  const speakText =
-    (text) => {
+    }, []);
 
-      if (
-        !voiceEnabled ||
-        !text
-      ) return;
+    // SAVE VOICE
+    useEffect(() => {
 
-      window.speechSynthesis.cancel();
+      if (selectedVoice) {
 
-      const utterance =
-        new SpeechSynthesisUtterance(
-          text
+        localStorage.setItem(
+          "selectedVoice",
+          selectedVoice.name
         );
-
-      const selected =
-        voices.find(
-          (voice) =>
-            voice.name ===
-            selectedVoice
-        );
-
-      if (selected) {
-
-        utterance.voice =
-          selected;
       }
 
-      utterance.rate = 1;
+    }, [selectedVoice]);
 
-      utterance.pitch = 1;
+    // VOICE INPUT
+    useEffect(() => {
 
-      utterance.onstart =
-        () => {
+      if (
+        transcript &&
+        typeof setMessage ===
+          "function"
+      ) {
 
-          setSpeaking(
-            true
+        setMessage(transcript);
+      }
+
+    }, [transcript, setMessage]);
+
+    // START LISTENING
+    const startListening =
+      () => {
+
+        resetTranscript();
+
+        SpeechRecognition.startListening({
+          continuous: true,
+        });
+      };
+
+    // STOP LISTENING
+    const stopListening =
+      () => {
+
+        SpeechRecognition.stopListening();
+      };
+
+    // SPEAK
+    const speakText =
+      (text) => {
+
+        if (!voiceEnabled) return;
+
+        if (
+          !window.speechSynthesis
+        ) return;
+
+        window.speechSynthesis.cancel();
+
+        const utterance =
+          new SpeechSynthesisUtterance(
+            text
           );
-        };
 
-      utterance.onend =
-        () => {
+        if (selectedVoice) {
 
-          setSpeaking(
-            false
-          );
-        };
+          utterance.voice =
+            selectedVoice;
+        }
 
-      utterance.onerror =
-        () => {
+        utterance.onstart =
+          () => {
 
-          setSpeaking(
-            false
-          );
-        };
+            setSpeaking(true);
+          };
 
-      window.speechSynthesis.speak(
-        utterance
-      );
+        utterance.onend =
+          () => {
+
+            setSpeaking(false);
+          };
+
+        utterance.onerror =
+          () => {
+
+            setSpeaking(false);
+          };
+
+        window.speechSynthesis.speak(
+          utterance
+        );
+      };
+
+    return {
+
+      transcript,
+
+      listening,
+
+      startListening,
+
+      stopListening,
+
+      browserSupportsSpeechRecognition,
+
+      speaking,
+
+      voices,
+
+      selectedVoice,
+
+      setSelectedVoice,
+
+      voiceEnabled,
+
+      setVoiceEnabled,
+
+      speakText,
     };
-
-  return {
-
-    voiceEnabled,
-    setVoiceEnabled,
-
-    speaking,
-
-    voices,
-
-    selectedVoice,
-    setSelectedVoice,
-
-    speakText,
   };
-}
