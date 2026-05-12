@@ -1,7 +1,9 @@
 import jwt from "jsonwebtoken";
 
-const authMiddleware =
-  (req, res, next) => {
+import User from "../models/User.js";
+
+export const protect =
+  async (req, res, next) => {
 
     try {
 
@@ -25,7 +27,21 @@ const authMiddleware =
           process.env.JWT_SECRET
         );
 
-      req.user = decoded;
+      // GET FULL USER
+      const user =
+        await User.findById(
+          decoded.id
+        ).select("-password");
+
+      if (!user) {
+
+        return res.status(401).json({
+          message:
+            "User not found",
+        });
+      }
+
+      req.user = user;
 
       next();
 
@@ -40,4 +56,4 @@ const authMiddleware =
     }
   };
 
-export default authMiddleware;
+export default protect;
