@@ -100,9 +100,8 @@ function Sidebar({
 
                     onClick={(e) => {
 
-                      e.stopPropagation();
-
                       deleteConversation(
+                        e,
                         conversation.id
                       );
                     }}
@@ -125,13 +124,23 @@ function Sidebar({
           <select
             className="voice-select"
 
-            value={selectedVoice}
-
-            onChange={(e) =>
-              setSelectedVoice(
-                e.target.value
-              )
+            value={
+              selectedVoice?.name || ""
             }
+
+            onChange={(e) => {
+
+              const selected =
+                voices.find(
+                  (voice) =>
+                    voice.name ===
+                    e.target.value
+                );
+
+              setSelectedVoice(
+                selected
+              );
+            }}
           >
 
             {voices.map(
@@ -141,7 +150,12 @@ function Sidebar({
                   key={index}
                   value={voice.name}
                 >
-                  {voice.name}
+                  {voice.name.length > 40
+                    ? voice.name.slice(
+                        0,
+                        40
+                      ) + "..."
+                    : voice.name}
                 </option>
               )
             )}
