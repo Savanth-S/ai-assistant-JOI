@@ -63,10 +63,26 @@ function Login() {
           return;
         }
 
+        // SAVE TOKEN
+
         localStorage.setItem(
           "token",
           data.token
         );
+
+        // SAVE ASSISTANT DATA
+
+        localStorage.setItem(
+          "assistantName",
+          data.user.assistantName
+        );
+
+        localStorage.setItem(
+          "assistantPersonality",
+          data.user.assistantPersonality
+        );
+
+        // NAVIGATE
 
         navigate("/chat");
 
@@ -86,6 +102,7 @@ function Login() {
     (e) => {
 
       if (e.key === "Enter") {
+
         loginUser();
       }
     };

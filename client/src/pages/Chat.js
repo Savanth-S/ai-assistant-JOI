@@ -18,7 +18,7 @@ function Chat() {
   const [
     assistantName,
     setAssistantName,
-  ] = useState("Nova");
+  ] = useState("Atrium");
 
   // MOBILE SIDEBAR
   const [
@@ -33,7 +33,11 @@ function Chat() {
         "assistantName"
       );
 
-    if (savedName) {
+    if (
+      savedName &&
+      savedName !== "undefined" &&
+      savedName !== "null"
+    ) {
 
       setAssistantName(
         savedName
