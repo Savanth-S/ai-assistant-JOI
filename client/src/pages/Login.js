@@ -1,5 +1,6 @@
 import {
   useState,
+  useEffect,
 } from "react";
 
 import {
@@ -14,14 +15,41 @@ function Login() {
   const navigate =
     useNavigate();
 
-  const [email, setEmail] =
-    useState("");
+  const [
+    email,
+    setEmail,
+  ] = useState("");
 
-  const [password, setPassword] =
-    useState("");
+  const [
+    password,
+    setPassword,
+  ] = useState("");
 
-  const [error, setError] =
-    useState("");
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    assistantName,
+    setAssistantName,
+  ] = useState("Joi");
+
+  useEffect(() => {
+
+    const savedName =
+      localStorage.getItem(
+        "assistantName"
+      );
+
+    if (savedName) {
+
+      setAssistantName(
+        savedName
+      );
+    }
+
+  }, []);
 
   const loginUser =
     async () => {
@@ -68,6 +96,8 @@ function Login() {
 
       } catch (error) {
 
+        console.log(error);
+
         setError(
           "Server error"
         );
@@ -89,7 +119,7 @@ function Login() {
       <div className="auth-card">
 
         <div className="auth-logo">
-          Joi
+          {assistantName}
         </div>
 
         <p className="auth-subtitle">
@@ -99,26 +129,38 @@ function Login() {
         <input
           type="email"
           placeholder="Email"
+
           value={email}
+
           onChange={(e) =>
             setEmail(
               e.target.value
             )
           }
-          onKeyDown={handleKeyDown}
+
+          onKeyDown={
+            handleKeyDown
+          }
+
           className="auth-input"
         />
 
         <input
           type="password"
           placeholder="Password"
+
           value={password}
+
           onChange={(e) =>
             setPassword(
               e.target.value
             )
           }
-          onKeyDown={handleKeyDown}
+
+          onKeyDown={
+            handleKeyDown
+          }
+
           className="auth-input"
         />
 
@@ -130,9 +172,11 @@ function Login() {
         </button>
 
         {error && (
+
           <p className="auth-error">
             {error}
           </p>
+
         )}
 
         <div className="auth-footer">

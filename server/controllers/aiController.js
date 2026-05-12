@@ -1,6 +1,6 @@
-// server/controllers/aiController.js
-
 import Chat from "../models/Chat.js";
+
+import User from "../models/User.js";
 
 import openai from "../services/openaiService.js";
 
@@ -160,6 +160,20 @@ export const chatWithAI =
           });
       }
 
+      // GET USER SETTINGS
+      const user =
+        await User.findById(
+          req.user
+        );
+
+      const assistantName =
+        user?.assistantName ||
+        "Joi";
+
+      const assistantPersonality =
+        user?.assistantPersonality ||
+        "Helpful futuristic AI assistant";
+
       // CHECK EXISTING CHAT
       const existingChat =
         await Chat.findOne({
@@ -200,20 +214,26 @@ export const chatWithAI =
           })
           .limit(12);
 
+      // AI MESSAGES
       const messages = [
+
         {
           role: "system",
 
           content:
             `
-You are Joi, a futuristic AI assistant.
+You are ${assistantName}, a personalized AI assistant.
 
-You are:
-- smart
-- modern
-- conversational
-- concise
-- helpful
+Your personality:
+${assistantPersonality}
+
+Behavior Rules:
+- Stay in character consistently
+- Be conversational
+- Be intelligent and helpful
+- Give clear answers
+- Adapt your tone to the defined personality
+- Never say you are ChatGPT unless directly asked
 `,
         },
 
@@ -235,7 +255,7 @@ You are:
         "SENDING TO OPENROUTER..."
       );
 
-      // NORMAL RESPONSE (NOT STREAMING)
+      // AI RESPONSE
       const completion =
         await openai.chat.completions.create({
           model:
