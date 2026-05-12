@@ -1,60 +1,69 @@
-const API =
+const API_URL =
   "https://ai-assistant-joi-backend.onrender.com/api/ai";
 
+// FETCH CONVERSATIONS
 export const fetchConversations =
   async (token) => {
 
-    const res = await fetch(
-      `${API}/conversations`,
-      {
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
-        },
-      }
-    );
+    const res =
+      await fetch(
+        `${API_URL}/conversations`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      );
 
     return res.json();
   };
 
+// FETCH HISTORY
 export const fetchHistory =
   async (
     token,
     conversationId
   ) => {
 
-    const res = await fetch(
-      `${API}/history/${conversationId}`,
-      {
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
-        },
-      }
-    );
+    const res =
+      await fetch(
+        `${API_URL}/history/${conversationId}`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      );
 
     return res.json();
   };
 
+// DELETE CHAT
 export const deleteChat =
   async (
     token,
-    conversationId
+    id
   ) => {
 
-    return fetch(
-      `${API}/conversation/${conversationId}`,
-      {
-        method: "DELETE",
+    const res =
+      await fetch(
+        `${API_URL}/conversation/${id}`,
+        {
+          method: "DELETE",
 
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
-        },
-      }
-    );
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      );
+
+    return res.json();
   };
 
+// STREAM CHAT
 export const streamChat =
   async ({
     token,
@@ -63,9 +72,9 @@ export const streamChat =
     onChunk,
   }) => {
 
-    const response =
+    const res =
       await fetch(
-        `${API}/chat`,
+        `${API_URL}/chat`,
         {
           method: "POST",
 
@@ -77,45 +86,22 @@ export const streamChat =
               `Bearer ${token}`,
           },
 
-          body:
-            JSON.stringify({
-              message,
-              conversationId,
-            }),
+          body: JSON.stringify({
+            message,
+            conversationId,
+          }),
         }
       );
 
-    if (!response.ok) {
+    if (!res.ok) {
 
       throw new Error(
-        "Streaming failed"
+        "Failed to get AI response"
       );
     }
 
-    const reader =
-      response.body.getReader();
+    const text =
+      await res.text();
 
-    const decoder =
-      new TextDecoder();
-
-    let fullText = "";
-
-    while (true) {
-
-      const {
-        done,
-        value,
-      } = await reader.read();
-
-      if (done) break;
-
-      const chunk =
-        decoder.decode(value);
-
-      fullText += chunk;
-
-      onChunk(fullText);
-    }
-
-    return fullText;
+    onChunk(text);
   };

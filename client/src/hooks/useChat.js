@@ -334,6 +334,7 @@ ${uploadedFile.content}
           id
         );
 
+        // REMOVE FROM UI
         const updated =
           conversations.filter(
             (conv) =>
@@ -344,9 +345,27 @@ ${uploadedFile.content}
           updated
         );
 
+        // CLEAR CURRENT CHAT
+        if (
+          conversationId === id
+        ) {
+
+          const newId =
+            Date.now().toString();
+
+          setConversationId(
+            newId
+          );
+
+          setChat([]);
+        }
+
       } catch (error) {
 
-        console.log(error);
+        console.log(
+          "DELETE ERROR:",
+          error
+        );
       }
     };
 
