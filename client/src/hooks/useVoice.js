@@ -44,8 +44,73 @@ export const useVoice =
       const loadVoices =
         () => {
 
-          const availableVoices =
+          const allVoices =
             window.speechSynthesis.getVoices();
+
+          // FILTER GOOD VOICES
+          const availableVoices =
+            allVoices.filter(
+              (voice) => {
+
+                const name =
+                  voice.name.toLowerCase();
+
+                const lang =
+                  voice.lang.toLowerCase();
+
+                return (
+
+                  // ENGLISH ONLY
+                  lang.includes("en") &&
+
+                  // REMOVE BAD / DUPLICATE VOICES
+                  !name.includes("offline") &&
+                  !name.includes("legacy") &&
+                  !name.includes("espeak") &&
+                  !name.includes("test") &&
+                  !name.includes("google uk english female")
+                );
+              }
+            );
+
+          // PRIORITIZE BETTER VOICES
+          availableVoices.sort(
+            (a, b) => {
+
+              const preferred = [
+                "google",
+                "microsoft",
+                "samantha",
+                "daniel",
+                "zira",
+                "aria",
+              ];
+
+              const aScore =
+                preferred.some(
+                  (p) =>
+                    a.name
+                      .toLowerCase()
+                      .includes(p)
+                )
+                  ? 1
+                  : 0;
+
+              const bScore =
+                preferred.some(
+                  (p) =>
+                    b.name
+                      .toLowerCase()
+                      .includes(p)
+                )
+                  ? 1
+                  : 0;
+
+              return (
+                bScore - aScore
+              );
+            }
+          );
 
           if (
             availableVoices.length > 0
@@ -80,7 +145,7 @@ export const useVoice =
               }
             }
 
-            // DEFAULT VOICE
+            // DEFAULT TO BEST VOICE
             setSelectedVoice(
               availableVoices[0]
             );
@@ -167,6 +232,9 @@ export const useVoice =
           utterance.voice =
             selectedVoice;
         }
+
+        utterance.rate = 1;
+        utterance.pitch = 1;
 
         utterance.onstart =
           () => {
