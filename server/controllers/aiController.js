@@ -5,6 +5,10 @@ import User from "../models/User.js";
 import openai from "../services/openaiService.js";
 
 import {
+  searchWeb,
+} from "../services/webSearchService.js";
+
+import {
   generateConversationTitle,
 } from "../services/chatService.js";
 
@@ -214,6 +218,30 @@ export const chatWithAI =
           })
           .limit(12);
 
+      // WEB SEARCH
+      let webContext = "";
+
+      const webData =
+        await searchWeb(message);
+
+      if (webData) {
+
+        webContext =
+          `
+Live Internet Information:
+
+${webData.answer || ""}
+
+Sources:
+${webData.results
+  ?.map(
+    (result) =>
+      `- ${result.title}: ${result.content}`
+  )
+  .join("\n")}
+`;
+      }
+
       // AI MESSAGES
       const messages = [
 
@@ -227,12 +255,16 @@ You are ${assistantName}, a personalized AI assistant.
 Your personality:
 ${assistantPersonality}
 
+Internet Context:
+${webContext}
+
 Behavior Rules:
 - Stay in character consistently
 - Be conversational
 - Be intelligent and helpful
 - Give clear answers
 - Adapt your tone to the defined personality
+- Use live internet information when relevant
 - Never say you are ChatGPT unless directly asked
 `,
         },
@@ -249,6 +281,11 @@ Behavior Rules:
               chat.message,
           })
         ),
+
+        {
+          role: "user",
+          content: message,
+        },
       ];
 
       console.log(
