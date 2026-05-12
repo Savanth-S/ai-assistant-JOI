@@ -1,11 +1,11 @@
 import MessageBubble from "./MessageBubble";
-
 import TypingIndicator from "./TypingIndicator";
 
 function MessageList({
   chat,
   loading,
   chatEndRef,
+  assistantName,
 }) {
 
   return (
@@ -23,7 +23,7 @@ function MessageList({
           </div>
 
           <h1>
-            Meet Joi
+            Meet {assistantName || "Nova"}
           </h1>
 
           <p>

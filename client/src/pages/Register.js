@@ -32,7 +32,7 @@ function Register() {
       try {
 
         const res = await fetch(
-          "https://ai-assistant-joi-backend.onrender.com",
+          "https://ai-assistant-joi-backend.onrender.com/api/auth/register",
           {
             method: "POST",
 
@@ -61,9 +61,19 @@ function Register() {
           return;
         }
 
-        navigate("/login");
+        // TEMP SAVE TOKEN
+        localStorage.setItem(
+          "token",
+          data.token
+        );
+
+        navigate(
+          "/setup-assistant"
+        );
 
       } catch (error) {
+
+        console.log(error);
 
         setError(
           "Server error"
@@ -96,39 +106,57 @@ function Register() {
         <input
           type="text"
           placeholder="Name"
+
           value={name}
+
           onChange={(e) =>
             setName(
               e.target.value
             )
           }
-          onKeyDown={handleKeyDown}
+
+          onKeyDown={
+            handleKeyDown
+          }
+
           className="auth-input"
         />
 
         <input
           type="email"
           placeholder="Email"
+
           value={email}
+
           onChange={(e) =>
             setEmail(
               e.target.value
             )
           }
-          onKeyDown={handleKeyDown}
+
+          onKeyDown={
+            handleKeyDown
+          }
+
           className="auth-input"
         />
 
         <input
           type="password"
           placeholder="Password"
+
           value={password}
+
           onChange={(e) =>
             setPassword(
               e.target.value
             )
           }
-          onKeyDown={handleKeyDown}
+
+          onKeyDown={
+            handleKeyDown
+          }
+
           className="auth-input"
         />
 
@@ -136,15 +164,18 @@ function Register() {
           onClick={
             registerUser
           }
+
           className="auth-button"
         >
           Register
         </button>
 
         {error && (
+
           <p className="auth-error">
             {error}
           </p>
+
         )}
 
         <div className="auth-footer">

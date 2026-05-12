@@ -1,15 +1,22 @@
-function Header({ speaking }) {
+function Header({
+  speaking,
+  assistantName,
+}) {
+
   return (
     <div className="chat-header">
+
       <div>
+
         <h2>
-          Joi AI Assistant
+          {assistantName || "Nova"}
         </h2>
 
         <p>
           Your futuristic personal
           secretary
         </p>
+
       </div>
 
       <div
@@ -19,6 +26,7 @@ function Header({ speaking }) {
             : ""
         }`}
       ></div>
+
     </div>
   );
 }

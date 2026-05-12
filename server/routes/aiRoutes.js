@@ -7,9 +7,7 @@ import {
   chatWithAI,
 } from "../controllers/aiController.js";
 
-import {
-  protect,
-} from "../middleware/authMiddleware.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router =
   express.Router();
@@ -17,28 +15,28 @@ const router =
 // CHAT
 router.post(
   "/chat",
-  protect,
+  authMiddleware,
   chatWithAI
 );
 
 // ALL CONVERSATIONS
 router.get(
   "/conversations",
-  protect,
+  authMiddleware,
   getConversations
 );
 
 // CHAT HISTORY
 router.get(
   "/history/:id",
-  protect,
+  authMiddleware,
   getChatHistory
 );
 
 // DELETE CONVERSATION
 router.delete(
   "/conversation/:id",
-  protect,
+  authMiddleware,
   deleteConversation
 );
 

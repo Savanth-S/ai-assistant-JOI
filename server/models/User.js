@@ -18,6 +18,16 @@ const userSchema =
         type: String,
         required: true,
       },
+
+      assistantName: {
+        type: String,
+        default: "",
+      },
+
+      assistantPersonality: {
+        type: String,
+        default: "",
+      },
     },
 
     {

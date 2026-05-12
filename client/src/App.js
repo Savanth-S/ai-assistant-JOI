@@ -7,15 +7,16 @@ import {
 import "./App.css";
 
 import Login from "./pages/Login";
-
 import Register from "./pages/Register";
-
 import Chat from "./pages/Chat";
+import SetupAssistant from "./pages/SetupAssistant";
 
 function App() {
 
   const token =
-    localStorage.getItem("token");
+    localStorage.getItem(
+      "token"
+    );
 
   return (
 
@@ -43,6 +44,14 @@ function App() {
           }
         />
 
+        {/* SETUP ASSISTANT */}
+        <Route
+          path="/setup-assistant"
+          element={
+            <SetupAssistant />
+          }
+        />
+
         {/* CHAT */}
         <Route
           path="/chat"
@@ -57,13 +66,7 @@ function App() {
         <Route
           path="*"
           element={
-            <Navigate
-              to={
-                token
-                  ? "/chat"
-                  : "/login"
-              }
-            />
+            <Navigate to="/login" />
           }
         />
 

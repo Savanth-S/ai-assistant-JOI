@@ -1,5 +1,10 @@
 import "./Chat.css";
 
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import MessageList from "../components/MessageList";
@@ -9,6 +14,27 @@ import useChat from "../hooks/useChat";
 import { useVoice } from "../hooks/useVoice";
 
 function Chat() {
+
+  const [
+    assistantName,
+    setAssistantName,
+  ] = useState("Nova");
+
+  useEffect(() => {
+
+    const savedName =
+      localStorage.getItem(
+        "assistantName"
+      );
+
+    if (savedName) {
+
+      setAssistantName(
+        savedName
+      );
+    }
+
+  }, []);
 
   // VOICE HOOK
   const {
@@ -50,9 +76,7 @@ function Chat() {
   // LOGOUT
   const logout = () => {
 
-    localStorage.removeItem(
-      "token"
-    );
+    localStorage.clear();
 
     window.location.href =
       "/login";
@@ -104,11 +128,17 @@ function Chat() {
 
         <Header
           speaking={speaking}
+          assistantName={
+            assistantName
+          }
         />
 
         <MessageList
           chat={chat}
           loading={loading}
+          assistantName={
+            assistantName
+          }
         />
 
         <ChatInput
