@@ -1,6 +1,5 @@
 import {
   useState,
-  useEffect,
 } from "react";
 
 import {
@@ -29,27 +28,6 @@ function Login() {
     error,
     setError,
   ] = useState("");
-
-  const [
-    assistantName,
-    setAssistantName,
-  ] = useState("Joi");
-
-  useEffect(() => {
-
-    const savedName =
-      localStorage.getItem(
-        "assistantName"
-      );
-
-    if (savedName) {
-
-      setAssistantName(
-        savedName
-      );
-    }
-
-  }, []);
 
   const loginUser =
     async () => {
@@ -119,11 +97,11 @@ function Login() {
       <div className="auth-card">
 
         <div className="auth-logo">
-          {assistantName}
+          Atrium
         </div>
 
         <p className="auth-subtitle">
-          Welcome back.
+          Welcome back to your AI workspace.
         </p>
 
         <input

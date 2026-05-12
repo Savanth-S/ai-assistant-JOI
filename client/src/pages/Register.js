@@ -14,17 +14,25 @@ function Register() {
   const navigate =
     useNavigate();
 
-  const [name, setName] =
-    useState("");
+  const [
+    name,
+    setName,
+  ] = useState("");
 
-  const [email, setEmail] =
-    useState("");
+  const [
+    email,
+    setEmail,
+  ] = useState("");
 
-  const [password, setPassword] =
-    useState("");
+  const [
+    password,
+    setPassword,
+  ] = useState("");
 
-  const [error, setError] =
-    useState("");
+  const [
+    error,
+    setError,
+  ] = useState("");
 
   const registerUser =
     async () => {
@@ -96,11 +104,11 @@ function Register() {
       <div className="auth-card">
 
         <div className="auth-logo">
-          Joi
+          Atrium
         </div>
 
         <p className="auth-subtitle">
-          Create your AI workspace.
+          Create your personalized AI workspace.
         </p>
 
         <input
