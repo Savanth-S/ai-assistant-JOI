@@ -16,7 +16,7 @@ export const getConversations =
 
       const chats =
         await Chat.find({
-          userId: req.user,
+          userId: req.user._id,
         });
 
       const grouped =
@@ -82,7 +82,7 @@ export const getChatHistory =
 
       const chats =
         await Chat.find({
-          userId: req.user,
+          userId: req.user._id,
 
           conversationId:
             req.params.id,
@@ -110,7 +110,7 @@ export const deleteConversation =
     try {
 
       await Chat.deleteMany({
-        userId: req.user,
+        userId: req.user._id,
 
         conversationId:
           req.params.id,
@@ -163,7 +163,7 @@ export const chatWithAI =
       // GET USER SETTINGS
       const user =
         await User.findById(
-          req.user
+          req.user._id
         );
 
       const assistantName =
@@ -177,7 +177,7 @@ export const chatWithAI =
       // CHECK EXISTING CHAT
       const existingChat =
         await Chat.findOne({
-          userId: req.user,
+          userId: req.user._id,
           conversationId,
         });
 
@@ -192,7 +192,7 @@ export const chatWithAI =
 
       // SAVE USER MESSAGE
       await Chat.create({
-        userId: req.user,
+        userId: req.user._id,
 
         conversationId,
 
@@ -206,7 +206,7 @@ export const chatWithAI =
       // LOAD HISTORY
       const previousChats =
         await Chat.find({
-          userId: req.user,
+          userId: req.user._id,
           conversationId,
         })
           .sort({
@@ -259,7 +259,7 @@ Behavior Rules:
       const completion =
         await openai.chat.completions.create({
           model:
-            "openai/gpt-3.5-turbo",
+            "openai/gpt-4o-mini",
 
           messages,
         });
@@ -276,7 +276,7 @@ Behavior Rules:
 
       // SAVE AI MESSAGE
       await Chat.create({
-        userId: req.user,
+        userId: req.user._id,
 
         conversationId,
 
@@ -299,7 +299,7 @@ Behavior Rules:
 
             const chats =
               await Chat.find({
-                userId: req.user,
+                userId: req.user._id,
                 conversationId,
               })
                 .sort({
@@ -328,7 +328,7 @@ Behavior Rules:
 
             await Chat.updateMany(
               {
-                userId: req.user,
+                userId: req.user._id,
                 conversationId,
               },
               {
