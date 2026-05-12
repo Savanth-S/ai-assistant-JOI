@@ -1,3 +1,4 @@
+import "./ChatInput.css";
 import {
   Send,
   Mic,

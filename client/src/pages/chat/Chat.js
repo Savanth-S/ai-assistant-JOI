@@ -1,3 +1,4 @@
+```jsx
 import "./Chat.css";
 
 import {
@@ -5,13 +6,13 @@ import {
   useState,
 } from "react";
 
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
-import MessageList from "../components/MessageList";
-import ChatInput from "../components/ChatInput";
+import Sidebar from "../../components/chat/Sidebar/Sidebar";
+import Header from "../../components/chat/Header/Header";
+import MessageList from "../../components/chat/MessageList/MessageList";
+import ChatInput from "../../components/chat/ChatInput/ChatInput";
 
-import useChat from "../hooks/useChat";
-import { useVoice } from "../hooks/useVoice";
+import useChat from "../../hooks/useChat";
+import { useVoice } from "../../hooks/useVoice";
 
 function Chat() {
 
@@ -145,8 +146,6 @@ function Chat() {
 
       <div className="chat-container">
 
-        {/* MOBILE MENU BUTTON */}
-
         <button
           className="mobile-menu-btn"
 
@@ -215,3 +214,4 @@ function Chat() {
 }
 
 export default Chat;
+```

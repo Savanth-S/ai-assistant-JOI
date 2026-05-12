@@ -1,5 +1,6 @@
 import MessageBubble from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
+import "./MessageList.css";
 
 function MessageList({
   chat,
