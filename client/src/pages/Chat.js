@@ -5,13 +5,13 @@ import {
   useState,
 } from "react";
 
-import Sidebar from "../../components/chat/Sidebar/Sidebar";
-import Header from "../../components/chat/Header/Header";
-import MessageList from "../../components/chat/MessageList/MessageList";
-import ChatInput from "../../components/chat/ChatInput/ChatInput";
+import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+import MessageList from "../components/MessageList";
+import ChatInput from "../components/ChatInput";
 
-import useChat from "../../hooks/useChat";
-import { useVoice } from "../../hooks/useVoice";
+import useChat from "../hooks/useChat";
+import { useVoice } from "../hooks/useVoice";
 
 function Chat() {
 
@@ -20,6 +20,7 @@ function Chat() {
     setAssistantName,
   ] = useState("Atrium");
 
+  // MOBILE SIDEBAR
   const [
     sidebarOpen,
     setSidebarOpen,
@@ -45,6 +46,7 @@ function Chat() {
 
   }, []);
 
+  // VOICE HOOK
   const {
     listening,
     startListening,
@@ -59,6 +61,7 @@ function Chat() {
     speakText,
   } = useVoice(() => {});
 
+  // CHAT HOOK
   const {
     message,
     setMessage,
@@ -75,10 +78,12 @@ function Chat() {
     speakText
   );
 
+  // CONNECT VOICE INPUT
   useVoice(
     setMessage
   );
 
+  // LOGOUT
   const logout = () => {
 
     localStorage.clear();
@@ -139,6 +144,8 @@ function Chat() {
       />
 
       <div className="chat-container">
+
+        {/* MOBILE MENU BUTTON */}
 
         <button
           className="mobile-menu-btn"

@@ -1,10 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import './styles/globals.css';
-import './styles/variables.css';
-import './styles/responsive.css';
-
 import "./index.css";
 
 import App from "./App";
