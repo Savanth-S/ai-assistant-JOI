@@ -72,6 +72,7 @@ function useChat(
 
   }, [conversationId]);
 
+  // FIXED
   const loadConversations =
     useCallback(
       async () => {
@@ -91,18 +92,23 @@ function useChat(
               data
             );
 
-            // RESTORE CHAT AFTER REFRESH
+            // RESTORE SAVED CHAT ONLY
+            const savedConversation =
+              localStorage.getItem(
+                "currentConversationId"
+              );
+
             if (
-              data.length > 0 &&
-              !data.find(
+              savedConversation &&
+              data.find(
                 (conv) =>
                   conv.id ===
-                  conversationId
+                  savedConversation
               )
             ) {
 
               setConversationId(
-                data[0].id
+                savedConversation
               );
             }
 
@@ -129,7 +135,6 @@ function useChat(
       },
       [
         token,
-        conversationId,
       ]
     );
 
