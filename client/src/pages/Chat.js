@@ -83,10 +83,16 @@ function Chat() {
     setMessage
   );
 
-  // LOGOUT
+  // FIXED LOGOUT
   const logout = () => {
 
-    localStorage.clear();
+    localStorage.removeItem(
+      "token"
+    );
+
+    localStorage.removeItem(
+      "user"
+    );
 
     window.location.href =
       "/login";
@@ -144,8 +150,6 @@ function Chat() {
       />
 
       <div className="chat-container">
-
-        {/* MOBILE MENU BUTTON */}
 
         <button
           className="mobile-menu-btn"

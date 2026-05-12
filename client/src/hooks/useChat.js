@@ -36,11 +36,18 @@ function useChat(
     setLoading] =
     useState(false);
 
+  // FIXED
   const [conversationId,
     setConversationId] =
-    useState(
-      Date.now().toString()
-    );
+    useState(() => {
+
+      return (
+        localStorage.getItem(
+          "currentConversationId"
+        ) ||
+        Date.now().toString()
+      );
+    });
 
   const [conversations,
     setConversations] =
@@ -54,6 +61,16 @@ function useChat(
     conversationFiles[
       conversationId
     ];
+
+  // SAVE CURRENT CONVERSATION
+  useEffect(() => {
+
+    localStorage.setItem(
+      "currentConversationId",
+      conversationId
+    );
+
+  }, [conversationId]);
 
   const loadConversations =
     useCallback(
@@ -73,6 +90,21 @@ function useChat(
             setConversations(
               data
             );
+
+            // RESTORE CHAT AFTER REFRESH
+            if (
+              data.length > 0 &&
+              !data.find(
+                (conv) =>
+                  conv.id ===
+                  conversationId
+              )
+            ) {
+
+              setConversationId(
+                data[0].id
+              );
+            }
 
           } else {
 
@@ -95,7 +127,10 @@ function useChat(
           );
         }
       },
-      [token]
+      [
+        token,
+        conversationId,
+      ]
     );
 
   const loadHistory =
@@ -237,11 +272,13 @@ function useChat(
         ...prev,
         {
           sender: "user",
+
           text:
             currentMessage,
         },
         {
           sender: "ai",
+
           text: "",
         },
       ]);
@@ -319,6 +356,7 @@ ${uploadedFile.content}
       }
     };
 
+  // FIXED DELETE
   const deleteConversation =
     async (
       e,
@@ -334,7 +372,6 @@ ${uploadedFile.content}
           id
         );
 
-        // REMOVE FROM UI
         const updated =
           conversations.filter(
             (conv) =>
@@ -345,19 +382,33 @@ ${uploadedFile.content}
           updated
         );
 
-        // CLEAR CURRENT CHAT
+        localStorage.removeItem(
+          "currentConversationId"
+        );
+
         if (
           conversationId === id
         ) {
 
-          const newId =
-            Date.now().toString();
+          if (
+            updated.length > 0
+          ) {
 
-          setConversationId(
-            newId
-          );
+            setConversationId(
+              updated[0].id
+            );
 
-          setChat([]);
+          } else {
+
+            const newId =
+              Date.now().toString();
+
+            setConversationId(
+              newId
+            );
+
+            setChat([]);
+          }
         }
 
       } catch (error) {
@@ -369,11 +420,17 @@ ${uploadedFile.content}
       }
     };
 
+  // FIXED NEW CHAT
   const newConversation =
     () => {
 
       const newId =
         Date.now().toString();
+
+      localStorage.setItem(
+        "currentConversationId",
+        newId
+      );
 
       setConversationId(
         newId

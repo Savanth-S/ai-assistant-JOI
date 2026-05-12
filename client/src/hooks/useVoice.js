@@ -25,10 +25,19 @@ export const useVoice =
       setSelectedVoice,
     ] = useState(null);
 
+    // FIXED
     const [
       voiceEnabled,
       setVoiceEnabled,
-    ] = useState(true);
+    ] = useState(() => {
+
+      const saved =
+        localStorage.getItem(
+          "voiceEnabled"
+        );
+
+      return saved !== "false";
+    });
 
     const {
       transcript,
@@ -47,7 +56,6 @@ export const useVoice =
           const allVoices =
             window.speechSynthesis.getVoices();
 
-          // FILTER GOOD VOICES
           const availableVoices =
             allVoices.filter(
               (voice) => {
@@ -60,10 +68,8 @@ export const useVoice =
 
                 return (
 
-                  // ENGLISH ONLY
                   lang.includes("en") &&
 
-                  // REMOVE BAD / DUPLICATE VOICES
                   !name.includes("offline") &&
                   !name.includes("legacy") &&
                   !name.includes("espeak") &&
@@ -73,7 +79,6 @@ export const useVoice =
               }
             );
 
-          // PRIORITIZE BETTER VOICES
           availableVoices.sort(
             (a, b) => {
 
@@ -120,7 +125,6 @@ export const useVoice =
               availableVoices
             );
 
-            // RESTORE SAVED VOICE
             const savedVoice =
               localStorage.getItem(
                 "selectedVoice"
@@ -145,7 +149,6 @@ export const useVoice =
               }
             }
 
-            // DEFAULT TO BEST VOICE
             setSelectedVoice(
               availableVoices[0]
             );
@@ -165,7 +168,7 @@ export const useVoice =
 
     }, []);
 
-    // SAVE VOICE
+    // SAVE SELECTED VOICE
     useEffect(() => {
 
       if (selectedVoice) {
@@ -177,6 +180,21 @@ export const useVoice =
       }
 
     }, [selectedVoice]);
+
+    // FIXED SAVE VOICE ENABLED
+    useEffect(() => {
+
+      localStorage.setItem(
+        "voiceEnabled",
+        voiceEnabled
+      );
+
+      if (!voiceEnabled) {
+
+        window.speechSynthesis.cancel();
+      }
+
+    }, [voiceEnabled]);
 
     // VOICE INPUT
     useEffect(() => {
@@ -234,6 +252,7 @@ export const useVoice =
         }
 
         utterance.rate = 1;
+
         utterance.pitch = 1;
 
         utterance.onstart =
