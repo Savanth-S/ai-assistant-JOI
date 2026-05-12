@@ -1,4 +1,4 @@
-```css
+css
 .sidebar {
   width: 290px;
   min-width: 290px;
@@ -242,4 +242,3 @@
 .logout-btn:hover {
   transform: translateY(-1px);
 }
-```

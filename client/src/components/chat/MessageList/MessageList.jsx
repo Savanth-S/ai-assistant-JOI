@@ -1,11 +1,8 @@
-import MessageBubble from "./MessageBubble";
-import TypingIndicator from "./TypingIndicator";
 import "./MessageList.css";
 
 function MessageList({
   chat,
   loading,
-  chatEndRef,
   assistantName,
 }) {
 
@@ -13,9 +10,7 @@ function MessageList({
 
     <div className="messages-container">
 
-      {/* EMPTY STATE */}
-
-      {chat.length === 0 && (
+      {chat.length === 0 ? (
 
         <div className="welcome-screen">
 
@@ -24,55 +19,71 @@ function MessageList({
           </div>
 
           <h1>
-            Meet {assistantName || "Nova"}
+            {assistantName}
           </h1>
 
           <p>
-            Your intelligent AI companion for coding,
-            research, productivity, and conversation.
+            Your futuristic AI assistant
+            for coding, research,
+            creativity, and productivity.
           </p>
 
           <div className="welcome-suggestions">
 
             <div className="suggestion-card">
-              Explain this codebase
+              Build me a React dashboard
             </div>
 
             <div className="suggestion-card">
-              Summarize a PDF
+              Explain quantum computing
             </div>
 
             <div className="suggestion-card">
-              Generate React components
+              Create a business plan
             </div>
 
             <div className="suggestion-card">
-              Analyze uploaded files
+              Help debug my code
             </div>
 
           </div>
 
         </div>
+
+      ) : (
+
+        <>
+          {chat.map((msg, index) => (
+
+            <div
+              key={index}
+
+              className={`message-row ${msg.role}`}
+            >
+
+              <div
+                className={`message-bubble ${msg.role}`}
+              >
+                {msg.content}
+              </div>
+
+            </div>
+          ))}
+
+          {loading && (
+
+            <div className="message-row ai">
+
+              <div className="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+
+            </div>
+          )}
+        </>
       )}
-
-      {/* MESSAGES */}
-
-      {chat.map((msg, index) => (
-
-        <MessageBubble
-          key={index}
-          message={msg}
-        />
-
-      ))}
-
-      {/* LOADING */}
-
-      {loading && (
-        <TypingIndicator />
-      )}
-
-      <div ref={chatEndRef}></div>
 
     </div>
   );

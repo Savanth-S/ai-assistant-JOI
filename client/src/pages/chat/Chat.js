@@ -1,4 +1,3 @@
-```jsx
 import "./Chat.css";
 
 import {
@@ -21,7 +20,6 @@ function Chat() {
     setAssistantName,
   ] = useState("Atrium");
 
-  // MOBILE SIDEBAR
   const [
     sidebarOpen,
     setSidebarOpen,
@@ -47,7 +45,6 @@ function Chat() {
 
   }, []);
 
-  // VOICE HOOK
   const {
     listening,
     startListening,
@@ -62,7 +59,6 @@ function Chat() {
     speakText,
   } = useVoice(() => {});
 
-  // CHAT HOOK
   const {
     message,
     setMessage,
@@ -79,12 +75,10 @@ function Chat() {
     speakText
   );
 
-  // CONNECT VOICE INPUT
   useVoice(
     setMessage
   );
 
-  // LOGOUT
   const logout = () => {
 
     localStorage.clear();
@@ -214,4 +208,3 @@ function Chat() {
 }
 
 export default Chat;
-```
