@@ -1,191 +1,182 @@
 import {
-  Plus,
   Trash2,
-  Volume2,
-  VolumeX,
-  LogOut,
-  MessageSquare,
 } from "lucide-react";
 
 function Sidebar({
+
+  sidebarOpen,
+  setSidebarOpen,
+
   conversations,
   setConversationId,
   deleteConversation,
   newConversation,
+
   voices,
   selectedVoice,
   setSelectedVoice,
+
   voiceEnabled,
   setVoiceEnabled,
+
   logout,
 }) {
 
   return (
 
-    <div className="sidebar">
+    <>
 
-      {/* TOP */}
+      {/* OVERLAY */}
 
-      <div>
+      {sidebarOpen && (
 
-        <h1 className="logo">
-          Joi
-        </h1>
+        <div
+          className="sidebar-overlay"
 
-        <button
-          className="new-chat-btn"
-          onClick={newConversation}
-        >
+          onClick={() =>
+            setSidebarOpen(false)
+          }
+        />
 
-          <Plus size={20} />
+      )}
 
-          New Chat
+      {/* SIDEBAR */}
 
-        </button>
+      <div
+        className={`sidebar ${
+          sidebarOpen
+            ? "open"
+            : ""
+        }`}
+      >
 
-        {/* CONVERSATIONS */}
+        <div>
 
-        <div className="conversation-list">
+          <h1 className="logo">
+            Atrium
+          </h1>
 
-          {conversations.map(
-            (conv, index) => (
+          <button
+            className="new-chat-btn"
 
-              <div
-                key={index}
-                className="conversation-item"
-                onClick={() =>
-                  setConversationId(
-                    conv.id
-                  )
-                }
-              >
+            onClick={() => {
 
-                <div className="conversation-left">
+              newConversation();
 
-                  <MessageSquare
-                    size={16}
-                  />
+              setSidebarOpen(false);
+            }}
+          >
+            + New Chat
+          </button>
 
-                  <span>
+          {/* CONVERSATIONS */}
 
-                    {conv.title}
+          <div className="conversation-list">
 
-                  </span>
+            {conversations.map(
+              (conversation) => (
 
-                </div>
+                <div
+                  key={conversation.id}
 
-                <button
-                  className="delete-chat-btn"
-                  onClick={(e) =>
-                    deleteConversation(
-                      e,
-                      conv.id
-                    )
-                  }
+                  className="conversation-item"
+
+                  onClick={() => {
+
+                    setConversationId(
+                      conversation.id
+                    );
+
+                    setSidebarOpen(false);
+                  }}
                 >
 
-                  <Trash2
-                    size={17}
-                  />
+                  <span>
+                    {conversation.title}
+                  </span>
 
-                </button>
+                  <button
+                    className="delete-chat-btn"
 
-              </div>
-            )
-          )}
+                    onClick={(e) => {
+
+                      e.stopPropagation();
+
+                      deleteConversation(
+                        conversation.id
+                      );
+                    }}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+
+                </div>
+              )
+            )}
+
+          </div>
+
+        </div>
+
+        {/* FOOTER */}
+
+        <div className="sidebar-bottom">
+
+          <select
+            className="voice-select"
+
+            value={selectedVoice}
+
+            onChange={(e) =>
+              setSelectedVoice(
+                e.target.value
+              )
+            }
+          >
+
+            {voices.map(
+              (voice, index) => (
+
+                <option
+                  key={index}
+                  value={voice.name}
+                >
+                  {voice.name}
+                </option>
+              )
+            )}
+
+          </select>
+
+          <button
+            className="voice-toggle-btn"
+
+            onClick={() =>
+              setVoiceEnabled(
+                !voiceEnabled
+              )
+            }
+          >
+
+            {voiceEnabled
+              ? "Voice ON"
+              : "Voice OFF"}
+
+          </button>
+
+          <button
+            className="logout-btn"
+
+            onClick={logout}
+          >
+            Logout
+          </button>
 
         </div>
 
       </div>
 
-      {/* BOTTOM */}
-
-      <div className="sidebar-bottom">
-
-        {/* VOICE SELECT */}
-
-        <select
-          className="voice-select"
-
-          value={
-            selectedVoice
-          }
-
-          onChange={(e) =>
-            setSelectedVoice(
-              e.target.value
-            )
-          }
-        >
-
-          {voices.length === 0 ? (
-
-            <option>
-              Loading voices...
-            </option>
-
-          ) : (
-
-            voices.map(
-              (voice, index) => (
-
-                <option
-                  key={index}
-                  value={
-                    voice.name
-                  }
-                >
-
-                  {voice.name}
-
-                </option>
-              )
-            )
-
-          )}
-
-        </select>
-
-        {/* VOICE TOGGLE */}
-
-        <button
-          className="voice-toggle-btn"
-
-          onClick={() =>
-            setVoiceEnabled(
-              !voiceEnabled
-            )
-          }
-        >
-
-          {voiceEnabled ? (
-            <Volume2 size={20} />
-          ) : (
-            <VolumeX size={20} />
-          )}
-
-          {voiceEnabled
-            ? "Voice Enabled"
-            : "Voice Disabled"}
-
-        </button>
-
-        {/* LOGOUT */}
-
-        <button
-          className="logout-btn"
-          onClick={logout}
-        >
-
-          <LogOut size={20} />
-
-          Logout
-
-        </button>
-
-      </div>
-
-    </div>
+    </>
   );
 }
 

@@ -20,6 +20,12 @@ function Chat() {
     setAssistantName,
   ] = useState("Nova");
 
+  // MOBILE SIDEBAR
+  const [
+    sidebarOpen,
+    setSidebarOpen,
+  ] = useState(false);
+
   useEffect(() => {
 
     const savedName =
@@ -87,6 +93,15 @@ function Chat() {
     <div className="chat-page">
 
       <Sidebar
+
+        sidebarOpen={
+          sidebarOpen
+        }
+
+        setSidebarOpen={
+          setSidebarOpen
+        }
+
         conversations={
           conversations
         }
@@ -125,6 +140,18 @@ function Chat() {
       />
 
       <div className="chat-container">
+
+        {/* MOBILE MENU BUTTON */}
+
+        <button
+          className="mobile-menu-btn"
+
+          onClick={() =>
+            setSidebarOpen(true)
+          }
+        >
+          ☰
+        </button>
 
         <Header
           speaking={speaking}
