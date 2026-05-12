@@ -101,7 +101,7 @@ function Login() {
         </div>
 
         <p className="auth-subtitle">
-          Welcome back to your AI workspace.
+          Welcome to your AI workspace.
         </p>
 
         <input
