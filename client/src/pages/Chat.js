@@ -14,20 +14,17 @@ import useChat from "../hooks/useChat";
 import { useVoice } from "../hooks/useVoice";
 
 function Chat() {
-
   const [
     assistantName,
     setAssistantName,
-  ] = useState("Atrium");
+  ] = useState("Persona");
 
-  // MOBILE SIDEBAR
   const [
     sidebarOpen,
     setSidebarOpen,
   ] = useState(false);
 
   useEffect(() => {
-
     const savedName =
       localStorage.getItem(
         "assistantName"
@@ -38,15 +35,17 @@ function Chat() {
       savedName !== "undefined" &&
       savedName !== "null"
     ) {
-
       setAssistantName(
         savedName
       );
+    } else {
+      localStorage.setItem(
+        "assistantName",
+        "Persona"
+      );
     }
-
   }, []);
 
-  // VOICE HOOK
   const {
     listening,
     startListening,
@@ -61,7 +60,6 @@ function Chat() {
     speakText,
   } = useVoice(() => {});
 
-  // CHAT HOOK
   const {
     message,
     setMessage,
@@ -74,18 +72,11 @@ function Chat() {
     deleteConversation,
     handleKeyDown,
     handleFileUpload,
-  } = useChat(
-    speakText
-  );
+  } = useChat(speakText);
 
-  // CONNECT VOICE INPUT
-  useVoice(
-    setMessage
-  );
+  useVoice(setMessage);
 
-  // FIXED LOGOUT
   const logout = () => {
-
     localStorage.removeItem(
       "token"
     );
@@ -99,61 +90,45 @@ function Chat() {
   };
 
   return (
-
     <div className="chat-page">
-
       <Sidebar
-
         sidebarOpen={
           sidebarOpen
         }
-
         setSidebarOpen={
           setSidebarOpen
         }
-
         conversations={
           conversations
         }
-
         setConversationId={
           setConversationId
         }
-
         deleteConversation={
           deleteConversation
         }
-
         newConversation={
           newConversation
         }
-
         voices={voices}
-
         selectedVoice={
           selectedVoice
         }
-
         setSelectedVoice={
           setSelectedVoice
         }
-
         voiceEnabled={
           voiceEnabled
         }
-
         setVoiceEnabled={
           setVoiceEnabled
         }
-
         logout={logout}
       />
 
       <div className="chat-container">
-
         <button
           className="mobile-menu-btn"
-
           onClick={() =>
             setSidebarOpen(true)
           }
@@ -178,42 +153,32 @@ function Chat() {
 
         <ChatInput
           message={message}
-
           setMessage={
             setMessage
           }
-
           sendMessage={
             sendMessage
           }
-
           handleKeyDown={
             handleKeyDown
           }
-
           listening={
             listening
           }
-
           startListening={
             startListening
           }
-
           stopListening={
             stopListening
           }
-
           browserSupportsSpeechRecognition={
             browserSupportsSpeechRecognition
           }
-
           onFileSelect={
             handleFileUpload
           }
         />
-
       </div>
-
     </div>
   );
 }

@@ -15,25 +15,20 @@ import {
 // GET ALL CONVERSATIONS
 export const getConversations =
   async (req, res) => {
-
     try {
-
       const chats =
         await Chat.find({
           userId: req.user._id,
         });
 
-      const grouped =
-        {};
+      const grouped = {};
 
       chats.forEach((chat) => {
-
         if (
           !grouped[
             chat.conversationId
           ]
         ) {
-
           grouped[
             chat.conversationId
           ] = {
@@ -51,24 +46,14 @@ export const getConversations =
       });
 
       const conversations =
-        Object.values(
-          grouped
-        ).sort(
+        Object.values(grouped).sort(
           (a, b) =>
-            new Date(
-              b.createdAt
-            ) -
-            new Date(
-              a.createdAt
-            )
+            new Date(b.createdAt) -
+            new Date(a.createdAt)
         );
 
-      res.json(
-        conversations
-      );
-
+      res.json(conversations);
     } catch (error) {
-
       console.log(error);
 
       res.status(500).json({
@@ -81,9 +66,7 @@ export const getConversations =
 // GET CHAT HISTORY
 export const getChatHistory =
   async (req, res) => {
-
     try {
-
       const chats =
         await Chat.find({
           userId: req.user._id,
@@ -95,9 +78,7 @@ export const getChatHistory =
         });
 
       res.json(chats);
-
     } catch (error) {
-
       console.log(error);
 
       res.status(500).json({
@@ -110,9 +91,7 @@ export const getChatHistory =
 // DELETE CONVERSATION
 export const deleteConversation =
   async (req, res) => {
-
     try {
-
       await Chat.deleteMany({
         userId: req.user._id,
 
@@ -124,9 +103,7 @@ export const deleteConversation =
         message:
           "Conversation deleted",
       });
-
     } catch (error) {
-
       console.log(error);
 
       res.status(500).json({
@@ -139,9 +116,7 @@ export const deleteConversation =
 // CHAT WITH AI
 export const chatWithAI =
   async (req, res) => {
-
     try {
-
       console.log(
         "CHAT REQUEST RECEIVED"
       );
@@ -155,7 +130,6 @@ export const chatWithAI =
         !message ||
         !conversationId
       ) {
-
         return res
           .status(400)
           .json({
@@ -172,11 +146,11 @@ export const chatWithAI =
 
       const assistantName =
         user?.assistantName ||
-        "Joi";
+        "Persona";
 
       const assistantPersonality =
         user?.assistantPersonality ||
-        "Helpful futuristic AI assistant";
+        "Helpful, intelligent, calm, and personalized.";
 
       // CHECK EXISTING CHAT
       const existingChat =
@@ -189,7 +163,6 @@ export const chatWithAI =
         "New Chat";
 
       if (existingChat) {
-
         conversationTitle =
           existingChat.conversationTitle;
       }
@@ -225,9 +198,7 @@ export const chatWithAI =
         await searchWeb(message);
 
       if (webData) {
-
-        webContext =
-          `
+        webContext = `
 Live Internet Information:
 
 ${webData.answer || ""}
@@ -244,13 +215,11 @@ ${webData.results
 
       // AI MESSAGES
       const messages = [
-
         {
           role: "system",
 
-          content:
-            `
-You are ${assistantName}, a personalized AI assistant.
+          content: `
+You are ${assistantName}, a premium personalized AI assistant inside an app called Persona.
 
 Your personality:
 ${assistantPersonality}
@@ -259,13 +228,13 @@ Internet Context:
 ${webContext}
 
 Behavior Rules:
-- Stay in character consistently
-- Be conversational
-- Be intelligent and helpful
-- Give clear answers
+- Stay in character consistently as ${assistantName}
+- Be conversational, clear, and intelligent
+- Give helpful answers without unnecessary complexity
 - Adapt your tone to the defined personality
 - Use live internet information when relevant
-- Never say you are ChatGPT unless directly asked
+- Never say you are Joi, Nova, Atrium, or any previous assistant name
+- Never say you are ChatGPT unless directly asked what model you are
 `,
         },
 
@@ -329,14 +298,12 @@ Behavior Rules:
 
       // GENERATE TITLE
       if (!existingChat) {
-
         setTimeout(async () => {
-
           try {
-
             const chats =
               await Chat.find({
-                userId: req.user._id,
+                userId:
+                  req.user._id,
                 conversationId,
               })
                 .sort({
@@ -365,7 +332,8 @@ Behavior Rules:
 
             await Chat.updateMany(
               {
-                userId: req.user._id,
+                userId:
+                  req.user._id,
                 conversationId,
               },
               {
@@ -373,17 +341,12 @@ Behavior Rules:
                   smartTitle,
               }
             );
-
           } catch (error) {
-
             console.log(error);
           }
-
         }, 1500);
       }
-
     } catch (error) {
-
       console.log(
         "CHAT ERROR:",
         error

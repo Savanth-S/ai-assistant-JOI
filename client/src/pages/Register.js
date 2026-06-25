@@ -104,7 +104,7 @@ function Register() {
       <div className="auth-card">
 
         <div className="auth-logo">
-          Atrium
+          Persona
         </div>
 
         <p className="auth-subtitle">

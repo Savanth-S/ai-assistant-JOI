@@ -2,21 +2,17 @@ function Header({
   speaking,
   assistantName,
 }) {
-
   return (
     <div className="chat-header">
-
       <div>
-
         <h2>
-          {assistantName || "Nova"}
+          {assistantName ||
+            "Persona"}
         </h2>
 
         <p>
-          Your futuristic personal
-          secretary
+          Your personal AI assistant
         </p>
-
       </div>
 
       <div
@@ -26,7 +22,6 @@ function Header({
             : ""
         }`}
       ></div>
-
     </div>
   );
 }

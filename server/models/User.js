@@ -21,12 +21,13 @@ const userSchema =
 
       assistantName: {
         type: String,
-        default: "",
+        default: "Persona",
       },
 
       assistantPersonality: {
         type: String,
-        default: "",
+        default:
+          "Helpful, intelligent, calm, and personalized.",
       },
     },
 

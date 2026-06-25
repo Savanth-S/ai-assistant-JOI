@@ -9,19 +9,20 @@ import {
 import "./Auth.css";
 
 function SetupAssistant() {
-
   const navigate =
     useNavigate();
 
   const [
     assistantName,
     setAssistantName,
-  ] = useState("");
+  ] = useState("Persona");
 
   const [
     assistantPersonality,
     setAssistantPersonality,
-  ] = useState("");
+  ] = useState(
+    "Helpful, intelligent, calm, and personalized."
+  );
 
   const [
     error,
@@ -30,13 +31,21 @@ function SetupAssistant() {
 
   const saveAssistant =
     async () => {
-
       try {
+        setError("");
 
         const token =
           localStorage.getItem(
             "token"
           );
+
+        const finalAssistantName =
+          assistantName.trim() ||
+          "Persona";
+
+        const finalAssistantPersonality =
+          assistantPersonality.trim() ||
+          "Helpful, intelligent, calm, and personalized.";
 
         const res =
           await fetch(
@@ -53,10 +62,11 @@ function SetupAssistant() {
               },
 
               body: JSON.stringify({
+                assistantName:
+                  finalAssistantName,
 
-                assistantName,
-
-                assistantPersonality,
+                assistantPersonality:
+                  finalAssistantPersonality,
               }),
             }
           );
@@ -65,35 +75,30 @@ function SetupAssistant() {
           await res.json();
 
         if (!res.ok) {
-
           setError(
-            data.message
+            data.message ||
+              "Failed to setup assistant"
           );
 
           return;
         }
 
-        // SAVE LOCALLY
         localStorage.setItem(
           "assistantName",
-          assistantName
+          finalAssistantName
         );
 
         localStorage.setItem(
           "assistantPersonality",
-          assistantPersonality
+          finalAssistantPersonality
         );
 
-        // LOGOUT AFTER SETUP
         localStorage.removeItem(
           "token"
         );
 
-        // GO TO LOGIN
         navigate("/login");
-
       } catch (error) {
-
         console.log(error);
 
         setError(
@@ -103,49 +108,39 @@ function SetupAssistant() {
     };
 
   return (
-
     <div className="auth-page">
-
       <div className="auth-card">
-
         <div className="auth-logo">
-          Create Your AI
+          Persona
         </div>
 
         <p className="auth-subtitle">
-          Personalize your assistant.
+          Configure your personal AI assistant.
         </p>
 
         <input
           type="text"
           placeholder="Assistant Name"
-
           value={assistantName}
-
           onChange={(e) =>
             setAssistantName(
               e.target.value
             )
           }
-
           className="auth-input"
         />
 
         <textarea
-          placeholder="Describe your assistant personality..."
-
+          placeholder="Describe Persona's personality..."
           value={
             assistantPersonality
           }
-
           onChange={(e) =>
             setAssistantPersonality(
               e.target.value
             )
           }
-
           className="auth-input"
-
           style={{
             height: "120px",
             resize: "none",
@@ -156,22 +151,17 @@ function SetupAssistant() {
           onClick={
             saveAssistant
           }
-
           className="auth-button"
         >
           Continue
         </button>
 
         {error && (
-
           <p className="auth-error">
             {error}
           </p>
-
         )}
-
       </div>
-
     </div>
   );
 }
